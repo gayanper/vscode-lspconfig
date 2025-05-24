@@ -1,0 +1,7 @@
+README.md
+CHANGELOG.md
+LICENSE
+package-lock.json
+dist/
+.vscode/
+.github/
