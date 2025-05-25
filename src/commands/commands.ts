@@ -1,4 +1,10 @@
-import { commands, Disposable, ExtensionContext, window } from "vscode";
+import {
+  commands,
+  Disposable,
+  ExtensionContext,
+  window,
+  workspace,
+} from "vscode";
 import { LanguageClientManager } from "../clients/services";
 import * as configurations from "../configurations";
 import { ConfigurationManager } from "../configurations/services";
@@ -14,6 +20,7 @@ function registerCommands(
   context.extensionContext.subscriptions.push(showLanguageServerStatus(args));
   context.extensionContext.subscriptions.push(reloadConfiguration(args));
   context.extensionContext.subscriptions.push(createConfigurationFile(args));
+  context.extensionContext.subscriptions.push(openConfigurationFile(args));
 }
 
 export default registerCommands;
@@ -140,4 +147,18 @@ function createConfigurationFile(args: CommandRegistrationArgs): Disposable {
   return commands.registerCommand("vscode-lspconfig.createConfigFile", () => {
     return configurations.createConfigurationFile();
   });
+}
+
+function openConfigurationFile(args: CommandRegistrationArgs): Disposable {
+  return commands.registerCommand(
+    "vscode-lspconfig.openConfigurationFile",
+    async () => {
+      const filePath = configurations.CONFIGURATION_FILE_PATH;
+      if (configurations.isConfigured()) {
+        window.showTextDocument(await workspace.openTextDocument(filePath));
+      } else {
+        window.showErrorMessage("Configuration file does not exist");
+      }
+    },
+  );
 }

@@ -24,6 +24,10 @@
         "title": "LSP Config: Create Configuration File"
       },
       {
+        "command": "vscode-lspconfig.openConfigFile",
+        "title": "LSP Config: Open Configuration File"
+      },
+      {
         "command": "vscode-lspconfig.enableLanguageServer",
         "title": "LSP Config: Enable/Disable Language Servers"
       },
