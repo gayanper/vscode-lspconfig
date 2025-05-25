@@ -32,6 +32,11 @@ jobs:
 
     - run: npm run delete-release-next
       if: github.ref_name == 'main'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GH_PAT }}
       
     - run: npm run create-release-next
       if: github.ref_name == 'main'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+        
