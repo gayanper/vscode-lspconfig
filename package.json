@@ -2,6 +2,10 @@
   "name": "vscode-lspconfig",
   "displayName": "vscode-lspconfig",
   "description": "Configure external language servers for different file types similar to Neovim's lspconfig",
+  "repository": {
+    "url": "https://github.com/gayanper/vscode-lspconfig.git",
+    "type": "git"
+  },
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.100.0"
@@ -42,6 +46,7 @@
     ]
   },
   "scripts": {
+    "clean": "rimraf ./dist",
     "vscode:prepublish": "npm run package",
     "compile": "npm run check-types && npm run lint && node esbuild.js",
     "watch": "npm-run-all -p watch:*",
@@ -54,9 +59,13 @@
     "check-types": "tsc --noEmit",
     "lint": "eslint src && prettier . --check",
     "format": "prettier . --write",
-    "test": "vscode-test"
+    "test": "vscode-test",
+    "bundle-next": "npm run clean && vsce package --pre-release --dependencies",
+    "create-release-next": "gulp create-release-next",
+    "delete-release-next": "gulp delete-release-next"
   },
   "devDependencies": {
+    "rimraf": "^5.0.0",
     "@types/mocha": "^10.0.10",
     "@types/node": "20.x",
     "@types/vscode": "^1.100.0",
@@ -69,7 +78,9 @@
     "eslint-config-prettier": "10.1.5",
     "npm-run-all": "^4.1.5",
     "prettier": "3.5.3",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.2",
+    "gulp": "^5.0.0",
+    "@vscode/vsce": "^3.4.2"
   },
   "dependencies": {
     "vscode-languageclient": "^9.0.1"
