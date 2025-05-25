@@ -25,7 +25,7 @@ function createNextRelease(callback) {
   try {
     execSync(command, { stdio: "inherit" });
     console.log(
-      `Release ${releaseName} created successfully with tag ${releaseTag}.`
+      `Release ${releaseName} created successfully with tag ${releaseTag}.`,
     );
     callback();
   } catch (error) {
@@ -44,7 +44,7 @@ function deleteNextRelease(callback) {
       // delete the assets attached to the release
       const assets = execSync(
         `gh release view ${releaseTag} --json assets --jq '.assets[].name'`,
-        { encoding: "utf-8" }
+        { encoding: "utf-8" },
       )
         .split("\n")
         .filter((asset) => asset.trim() !== "");
@@ -78,8 +78,8 @@ function checkGithubCli(callback) {
   } catch (error) {
     callback(
       new Error(
-        "GitHub CLI (gh) is not installed. Please install it to use this task."
-      )
+        "GitHub CLI (gh) is not installed. Please install it to use this task.",
+      ),
     );
   }
 }
@@ -89,8 +89,8 @@ function checkGithubToken(callback) {
   if (!token) {
     callback(
       new Error(
-        "GITHUB_TOKEN environment variable is not set. Please set it to use this task."
-      )
+        "GITHUB_TOKEN environment variable is not set. Please set it to use this task.",
+      ),
     );
   } else {
     callback();
