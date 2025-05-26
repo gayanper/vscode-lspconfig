@@ -34,7 +34,18 @@ module.exports = {
   //       }
   //     }
   //   },
-  //   installMessage: 'To use pyright, install it via npm: npm install -g pyright'
+  //   installMessage: 'To use pyright, install it via npm: npm install -g pyright',
+  //   languageConfig: {
+  //      comments: {
+  //        lineComment: '#',
+  //        blockComment ['"""', '"""']
+  //      },
+  //      brackets: [
+  //        ['{', '}'],
+  //        ['[', ']'],
+  //        ['(', ')']
+  //      ]
+  //   }
   // },
 
   // Example: Bash language server
