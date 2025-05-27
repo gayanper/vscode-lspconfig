@@ -2,8 +2,13 @@ import * as vscode from "vscode";
 import createLanguageClientManager from "./clients";
 import { LanguageClientManager } from "./clients/services";
 import registerCommands from "./commands/commands";
-import { createConfigurationManager, isConfigured } from "./configurations";
+import {
+  createConfigurationManager,
+  isConfigured,
+  updateLanguageConfigurations,
+} from "./configurations";
 import { Context } from "./types";
+import { ConfigurationManager } from "./configurations/services";
 
 let languageClientManager: LanguageClientManager;
 
@@ -32,6 +37,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
   if (isConfigured()) {
     await configManager.load();
+    await patchPackageJson(configManager, extContext);
   } else {
     vscode.window
       .showInformationMessage(
@@ -72,4 +78,33 @@ export function deactivate() {
     return languageClientManager.stopAllClients();
   }
   return undefined;
+}
+
+async function patchPackageJson(
+  configManager: ConfigurationManager,
+  context: Context,
+) {
+  const result = await updateLanguageConfigurations(configManager, context);
+  switch (result) {
+    case "failed": {
+      vscode.window.showErrorMessage(
+        "Failed to update language configurations, please check the logs.",
+      );
+      break;
+    }
+    case "modified": {
+      vscode.window
+        .showInformationMessage(
+          "Protocol Buffers language support has been added. Please reload the extension for changes to take effect.",
+          "Reload Window",
+        )
+        .then((selection) => {
+          if (selection === "Reload Window") {
+            vscode.commands.executeCommand("workbench.action.reloadWindow");
+          }
+        });
+      break;
+    }
+    default:
+  }
 }
