@@ -24,7 +24,7 @@
         "title": "LSP Config: Create Configuration File"
       },
       {
-        "command": "vscode-lspconfig.openConfigFile",
+        "command": "vscode-lspconfig.openConfigurationFile",
         "title": "LSP Config: Open Configuration File"
       },
       {
