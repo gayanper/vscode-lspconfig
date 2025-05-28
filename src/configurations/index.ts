@@ -143,8 +143,7 @@ export async function updateLanguageConfigurations(
     const rawLanguages = packageJson.contributes?.languages;
     let languageExtensions: LanguageExtension[] = [];
 
-    const languageConfigsToMerge = configManager
-      .listAll();
+    const languageConfigsToMerge = configManager.listAll();
     if (languageConfigsToMerge.length > 0) {
       languageConfigsToMerge.forEach(([id, config]) => {
         if (config.languageConfig) {
