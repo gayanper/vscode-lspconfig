@@ -47,7 +47,8 @@
         "command": "vscode-lspconfig.showLanguageServerStatus",
         "title": "LSP Config: Show Language Server Status"
       }
-    ]
+    ],
+    "languages": []
   },
   "scripts": {
     "clean": "rimraf ./dist",
