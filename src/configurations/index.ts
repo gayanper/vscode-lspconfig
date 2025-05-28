@@ -43,15 +43,12 @@ export async function reloadConfiguration(configManager: ConfigurationManager) {
   const filePath = CONFIGURATION_FILE_PATH;
   if (fs.existsSync(filePath)) {
     await configManager.reload();
+    window.showInformationMessage("Language server configurations reloaded");
   } else {
-    const created = await createConfigurationFile();
-    if (!created) {
-      window.showErrorMessage("Failed to create configuration file");
-      return;
-    }
-    await configManager.reload();
+    window.showErrorMessage(
+      "Configuration file not found, Use [LSP Config: Create Configuration File] command to create one.",
+    );
   }
-  window.showInformationMessage("Language server configurations reloaded");
 }
 
 export function isConfigured(): boolean {
