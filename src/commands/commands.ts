@@ -21,6 +21,9 @@ function registerCommands(
   context.extensionContext.subscriptions.push(reloadConfiguration(args));
   context.extensionContext.subscriptions.push(createConfigurationFile(args));
   context.extensionContext.subscriptions.push(openConfigurationFile(args));
+  context.extensionContext.subscriptions.push(
+    reloadOnConfigurationSave(configurations.CONFIGURATION_FILE_PATH, args),
+  );
 }
 
 export default registerCommands;
@@ -28,6 +31,7 @@ export default registerCommands;
 export type CommandRegistrationArgs = {
   configManager: ConfigurationManager;
   lspClientsManager: LanguageClientManager;
+  context: Context;
 };
 
 function enableLanguageServer(args: CommandRegistrationArgs): Disposable {
@@ -111,8 +115,12 @@ function restartLanguageServer(args: CommandRegistrationArgs): Disposable {
 function reloadConfiguration(args: CommandRegistrationArgs): Disposable {
   return commands.registerCommand(
     "vscode-lspconfig.reloadConfiguration",
-    () => {
-      configurations.reloadConfiguration(args.configManager);
+    async () => {
+      await configurations.reloadConfiguration(args.configManager);
+      await configurations.updateLanguageConfigurations(
+        args.configManager,
+        args.context,
+      );
     },
   );
 }
@@ -161,4 +169,48 @@ function openConfigurationFile(args: CommandRegistrationArgs): Disposable {
       }
     },
   );
+}
+
+function reloadOnConfigurationSave(
+  filePath: string,
+  args: CommandRegistrationArgs,
+): Disposable {
+  return workspace.onDidSaveTextDocument(async (document) => {
+    if (document.uri.fsPath === filePath) {
+      await configurations.reloadConfiguration(args.configManager);
+      await patchPackageJson(args.configManager, args.context);
+    }
+  });
+}
+
+export async function patchPackageJson(
+  configManager: ConfigurationManager,
+  context: Context,
+) {
+  const result = await configurations.updateLanguageConfigurations(
+    configManager,
+    context,
+  );
+  switch (result) {
+    case "failed": {
+      window.showErrorMessage(
+        "Failed to update language configurations, please check the logs.",
+      );
+      break;
+    }
+    case "modified": {
+      window
+        .showInformationMessage(
+          "Protocol Buffers language support has been added. Please reload the extension for changes to take effect.",
+          "Reload Window",
+        )
+        .then((selection) => {
+          if (selection === "Reload Window") {
+            commands.executeCommand("workbench.action.reloadWindow");
+          }
+        });
+      break;
+    }
+    default:
+  }
 }
