@@ -85,6 +85,52 @@ type LanguageExtension = {
   aliases?: string[];
 };
 
+function isEqual(arg1: LanguageExtension[], arg2: LanguageExtension[]) {
+  if (arg1.length !== arg2.length) {
+    return false;
+  }
+
+  for (const value1 of arg1) {
+    let matched = false;
+    for (const value2 of arg2) {
+      if (value1.id !== value2.id) {
+        continue;
+      }
+
+      if (!isStrArrEqual(value1.aliases, value2.aliases)) {
+        continue;
+      }
+
+      if (!isStrArrEqual(value1.extensions, value2.extensions)) {
+        continue;
+      }
+
+      matched = true;
+      break;
+    }
+
+    if (!matched) {
+      return false;
+    }
+  }
+  return true;
+}
+
+function isStrArrEqual(arr1?: string[], arr2?: string[]): boolean {
+  if (!arr1 || !arr2) {
+    return false;
+  }
+
+  const sorted1 = arr1.sort();
+  const sorted2 = arr2.sort();
+
+  if (!sorted1.every((a, i) => a === sorted2[i])) {
+    return false;
+  }
+
+  return true;
+}
+
 export async function updateLanguageConfigurations(
   configManager: ConfigurationManager,
   context: Context,
@@ -96,19 +142,9 @@ export async function updateLanguageConfigurations(
     const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf8"));
     const rawLanguages = packageJson.contributes?.languages;
     let languageExtensions: LanguageExtension[] = [];
-    if (rawLanguages) {
-      languageExtensions = rawLanguages as LanguageExtension[];
-    }
 
-    const languageIds = languageExtensions.map((e) => e.id);
-    // add already registered languages in vscode
-    const registeredLangIds = await languages.getLanguages();
-    languageIds.push(...registeredLangIds);
-    const languageConfigsToMerge = configManager
-      .listAll()
-      .filter(([id, _]) => !languageIds.includes(id));
+    const languageConfigsToMerge = configManager.listAll();
     if (languageConfigsToMerge.length > 0) {
-      let modified: boolean = false;
       languageConfigsToMerge.forEach(([id, config]) => {
         if (config.languageConfig) {
           languageExtensions.push({
@@ -116,22 +152,23 @@ export async function updateLanguageConfigurations(
             aliases: [config.name],
             extensions: config.languageConfig.extensions,
           });
-          modified = true;
         }
       });
-
-      if (modified) {
-        packageJson.contributes.languages = languageExtensions;
-        fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
-
-        context.logChannel.info(
-          "Added following language contributions to package.json:",
-          languageExtensions.map((lang) => lang.id).join(", "),
-        );
-        return "modified";
-      }
     }
-    return "unmodified";
+
+    const modified = !isEqual(languageExtensions, rawLanguages || []);
+    if (modified) {
+      packageJson.contributes.languages = languageExtensions;
+      fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
+
+      context.logChannel.info(
+        "Added following language contributions to : ",
+        languageExtensions.map((lang) => lang.id).join(", "),
+      );
+      return "modified";
+    } else {
+      return "unmodified";
+    }
   } catch (error) {
     context.logChannel.error(
       "Failed to update language configurations:",
