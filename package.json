@@ -48,7 +48,8 @@
         "title": "LSP Config: Show Language Server Status"
       }
     ],
-    "languages": []
+    "languages": [],
+    "grammars": []
   },
   "scripts": {
     "clean": "rimraf ./dist",

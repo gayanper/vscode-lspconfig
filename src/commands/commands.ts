@@ -117,7 +117,7 @@ function reloadConfiguration(args: CommandRegistrationArgs): Disposable {
     "vscode-lspconfig.reloadConfiguration",
     async () => {
       await configurations.reloadConfiguration(args.configManager);
-      await configurations.updateLanguageConfigurations(
+      await configurations.updateLanguageExtension(
         args.configManager,
         args.context,
       );
@@ -187,7 +187,7 @@ export async function patchPackageJson(
   configManager: ConfigurationManager,
   context: Context,
 ) {
-  const result = await configurations.updateLanguageConfigurations(
+  const result = await configurations.updateLanguageExtension(
     configManager,
     context,
   );

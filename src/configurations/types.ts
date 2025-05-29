@@ -8,15 +8,10 @@ export interface LanguageServerConfig {
   revealOutputChannelOn?: "info" | "warn" | "error" | "never";
   env?: { [key: string]: string };
   installMessage?: string;
-  languageConfig?: {
+  language?: {
     extensions: string[];
     aliases: string[];
-    comments: {
-      lineComment: string;
-      blockComment: string[];
-    };
-    brackets: string[][];
-    autoClosingPairs: [{ open: string; close: string }];
-    surroundingPairs: string[][];
+    enableConfig?: boolean;
+    enableSyntax?: boolean;
   };
 }
