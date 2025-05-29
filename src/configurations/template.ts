@@ -19,45 +19,21 @@ const TEMPLATE = `/**
  */
 
 module.exports = {
-  // Example: Python language server (pyright)
-  // pyright: {
-  //   name: 'Pyright',
-  //   command: 'pyright-langserver',
-  //   args: ['--stdio'],
-  //   documentSelector: [],
-  //   settings: {
-  //     python: {
-  //       analysis: {
-  //         autoSearchPaths: true,
-  //         diagnosticMode: 'openFilesOnly',
-  //         useLibraryCodeForTypes: true
-  //       }
-  //     }
-  //   },
-  //   installMessage: 'To use pyright, install it via npm: npm install -g pyright',
-  //   languageConfig: {
-  //      comments: {
-  //        lineComment: '#',
-  //        blockComment ['"""', '"""']
-  //      },
-  //      brackets: [
-  //        ['{', '}'],
-  //        ['[', ']'],
-  //        ['(', ')']
-  //      ]
-  //   }
-  // },
-
   // Example: Bash language server
-  // bash: {
+  // bashls: {
   //   name: 'Bash Language Server',
   //   command: 'bash-language-server',
   //   args: ['start'],
   //   documentSelector: [
-  //     { scheme: 'file', language: 'shellscript' },
-  //     { scheme: 'file', language: 'bash' }
+  //     { scheme: 'file', language: 'bashls' },
   //   ],
-  //   installMessage: 'To use bash-language-server, install it via npm: npm install -g bash-language-server'
+  //   installMessage: 'To use bash-language-server, install it via npm: npm install -g bash-language-server',
+  //   language: {
+  //     extensions: ['.sh', '.bash'],
+  //     aliases: ['bash', 'sh'],
+  //     enableConfig: false,
+  //     enableSyntax: false,
+  //   },
   // },
 
   // Add your language server configurations here
