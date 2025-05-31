@@ -1,5 +1,7 @@
 {
   "name": "vscode-lspconfig",
+  "publisher": "org-gap",
+  "license": "Apache-2.0",
   "displayName": "vscode-lspconfig",
   "description": "Configure external language servers for different file types similar to Neovim's lspconfig",
   "repository": {
