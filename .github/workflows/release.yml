@@ -1,0 +1,62 @@
+name: Release Extension
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_type:
+        description: The type of the release
+        required: false
+        type: choice
+        default: "patch"
+        options:
+          - "patch"
+          - "minor"
+          - "major"
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [20.x]
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Branch validation
+      run: |
+        if [[ "${{ github.ref }}" != "refs/heads/main" ]]; then
+          echo "This workflow can only be run on the main branch."
+          exit 1
+        fi
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+
+    - name: Configure Git
+      run: |
+        git config --global user.email "workflows@github.com"
+        git config --global user.name "workflows@github.com"
+
+    - run: npm ci
+    - run: npm run compile
+    - id: test
+      run: xvfb-run --auto-servernum npm test
+    - run: npm run bundle
+
+    - name: Publish
+      id: publish
+      if: ${{ steps.test.outcome == 'success' }}
+      env:
+        VSCE_PAT: ${{ secrets.VSCE_TOKEN }}
+      run: |
+        vsce publish ${{ github.event.inputs.release_type }}
+
+    - name: Push
+      if: ${{ steps.publish.outcome == 'success' }}
+      run: |
+        git push origin
+        git push origin --tags
+  

@@ -1,6 +1,9 @@
 {
   "name": "vscode-lspconfig",
-  "displayName": "vscode-lspconfig",
+  "publisher": "org-gap",
+  "license": "Apache-2.0",
+  "displayName": "VSCode LSP Config",
+  "icon": "icons/icon.png",
   "description": "Configure external language servers for different file types similar to Neovim's lspconfig",
   "repository": {
     "url": "https://github.com/gayanper/vscode-lspconfig.git",
@@ -67,8 +70,10 @@
     "format": "prettier . --write",
     "test": "vscode-test",
     "bundle-next": "npm run clean && vsce package --pre-release --dependencies",
+    "bundle": "vsce package --dependencies",
     "create-release-next": "gulp create-release-next",
-    "delete-release-next": "gulp delete-release-next"
+    "delete-release-next": "gulp delete-release-next",
+    "vscode-install": "code --install-extension vscode-lspconfig-0.0.1.vsix --force"
   },
   "devDependencies": {
     "rimraf": "^5.0.0",
