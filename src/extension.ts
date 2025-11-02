@@ -47,6 +47,7 @@ export async function activate(context: vscode.ExtensionContext) {
       });
   }
 
+  // handles were the server might be not started yet when switching back to a document
   context.subscriptions.push(
     vscode.window.onDidChangeActiveTextEditor(async (editor) => {
       if (editor && editor.document) {
@@ -54,6 +55,14 @@ export async function activate(context: vscode.ExtensionContext) {
       }
     }),
   );
+
+  // handles when the document is open for the first time
+  context.subscriptions.push(
+    vscode.workspace.onDidOpenTextDocument((document) => {
+      languageClientManager.startClientsForLanguage(document);
+    }),
+  );
+
   handleActiveTextEditors();
 }
 
