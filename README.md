@@ -74,9 +74,9 @@ Each language server configuration can include the following options:
 | `env` | `{ [key: string]: string }` | Environment variables to set when running the language server | No |
 | `installMessage` | `string` | Message to display when the language server is not installed | No |
 | `language.extensions` | `string[]` | File extensions associated with the language (e.g., [".js", ".jsx"]) | No |
-| `language.aliases` | `string[]` | Language aliases that can be used in VS Code (e.g., ["JavaScript"]) | No |
-| `language.enableConfig` | `boolean` | Whether to enable configuration for this language | No |
-| `language.enableSyntax` | `boolean` | Whether to enable syntax highlighting for this language | No |
+| `language.aliases` | `string[]` | Language aliases that can be used in VS Code, when the language is already contributed by another extension | No |
+| `language.enableConfig` | `boolean` | Whether to enable language configuration for this server (language specific features like brackets, autoClosingPairs, etc.) | No |
+| `language.enableSyntax` | `boolean` | Whether to enable language syntax highlighting for this server | No |
 
 
 ### Language Configuration
