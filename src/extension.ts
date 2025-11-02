@@ -57,9 +57,11 @@ export async function activate(context: vscode.ExtensionContext) {
   );
 
   // handles when the document is open for the first time
-  context.subscriptions.push(vscode.workspace.onDidOpenTextDocument((document) => {
-    languageClientManager.startClientsForLanguage(document);
-  }));
+  context.subscriptions.push(
+    vscode.workspace.onDidOpenTextDocument((document) => {
+      languageClientManager.startClientsForLanguage(document);
+    }),
+  );
 
   handleActiveTextEditors();
 }
