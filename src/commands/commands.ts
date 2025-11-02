@@ -1,10 +1,4 @@
-import {
-  commands,
-  Disposable,
-  ExtensionContext,
-  window,
-  workspace,
-} from "vscode";
+import { commands, Disposable, window, workspace } from "vscode";
 import { LanguageClientManager } from "../clients/services";
 import * as configurations from "../configurations";
 import { ConfigurationManager } from "../configurations/services";
@@ -201,12 +195,12 @@ export async function patchPackageJson(
     case "modified": {
       window
         .showInformationMessage(
-          "Protocol Buffers language support has been added. Please reload the extension for changes to take effect.",
-          "Reload Window",
+          "New language support has been added. Please reload the extension for changes to take effect.",
+          "Reload Extension",
         )
         .then((selection) => {
-          if (selection === "Reload Window") {
-            commands.executeCommand("workbench.action.reloadWindow");
+          if (selection === "Reload Extension") {
+            commands.executeCommand("workbench.action.restartExtensionHost");
           }
         });
       break;

@@ -1,12 +1,11 @@
 import fs, { existsSync } from "fs";
 import os from "os";
 import path from "path";
-import { languages, window, workspace } from "vscode";
+import { window, workspace } from "vscode";
 import { Context } from "../types";
+import { isDeepEqual } from "../utils";
 import { ConfigurationManager } from "./services";
 import TEMPLATE from "./template";
-import { LanguageServerConfig } from "./types";
-import { isDeepEqual } from "../utils";
 
 export const CONFIGURATION_FILE_PATH = buildConfigurationFilePath();
 
