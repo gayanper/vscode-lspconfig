@@ -43,7 +43,7 @@ export class LanguageClientManager {
     if (this.startingClients.has(configId)) {
       return this.startingClients.get(configId)!;
     }
-    
+
     let differedResolveFn!: (value: boolean) => void;
     let differedRejectFn!: (reason?: any) => void;
     const differedPromise = new Promise<boolean>((resolve, reject) => {
