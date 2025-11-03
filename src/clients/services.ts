@@ -11,6 +11,8 @@ import { Context } from "../types";
 
 export class LanguageClientManager {
   private clients: Map<string, LanguageClient> = new Map();
+  private startingClients: Map<string, Promise<boolean>> = new Map();
+
   private outputChannel: vscode.LogOutputChannel;
   private extensionContext: vscode.ExtensionContext;
   private activeConfigurations: Map<string, boolean> = new Map();
@@ -38,7 +40,32 @@ export class LanguageClientManager {
       this.outputChannel.info(`Language server ${configId} is already running`);
       return true;
     }
+    if (this.startingClients.has(configId)) {
+      return this.startingClients.get(configId)!;
+    }
+    
+    let differedResolveFn!: (value: boolean) => void;
+    let differedRejectFn!: (reason?: any) => void;
+    const differedPromise = new Promise<boolean>((resolve, reject) => {
+      differedResolveFn = resolve;
+      differedRejectFn = reject;
+    });
+    this.startingClients.set(configId, differedPromise);
 
+    (async () => {
+      try {
+        const result = await this._startClient(configId);
+        differedResolveFn(result);
+      } catch (err) {
+        differedRejectFn(err);
+      } finally {
+        this.startingClients.delete(configId);
+      }
+    })();
+    return differedPromise;
+  }
+
+  private async _startClient(configId: string): Promise<boolean> {
     const config = this.configManager.get(configId);
     if (!config) {
       this.outputChannel.info(
