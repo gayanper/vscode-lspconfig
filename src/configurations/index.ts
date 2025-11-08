@@ -3,7 +3,7 @@ import os from "os";
 import path from "path";
 import { window, workspace } from "vscode";
 import { Context } from "../types";
-import { isDeepEqual } from "../utils";
+import { isSubset } from "../utils";
 import { ConfigurationManager } from "./services";
 import TEMPLATE from "./template";
 
@@ -104,8 +104,9 @@ export async function updateLanguageExtension(
     removeSymlinks(context);
 
     const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf8"));
-    const rawLanguages = packageJson.contributes?.languages;
-    const rawGrammars = packageJson.contributes?.grammars;
+    const rawLanguages = packageJson.contributes
+      ?.languages as LanguageExtension[];
+    const rawGrammars = packageJson.contributes?.grammars as GrammarExtension[];
 
     let languageExtensions: LanguageExtension[] = [];
     let grammarExtensions: GrammarExtension[] = [];
@@ -174,8 +175,8 @@ export async function updateLanguageExtension(
     }
 
     const modified =
-      !isDeepEqual(languageExtensions, rawLanguages || []) ||
-      !isDeepEqual(grammarExtensions, rawGrammars || []);
+      !isSubset(languageExtensions, rawLanguages) ||
+      !isSubset(grammarExtensions, rawGrammars);
     if (modified) {
       packageJson.contributes.languages = languageExtensions;
       packageJson.contributes.grammars = grammarExtensions;
